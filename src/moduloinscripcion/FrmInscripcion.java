@@ -192,7 +192,10 @@ Connection cn = con.conectar();
            // modelo.removeRow(fila);
             String carne = modelo.getValueAt(fila, 1).toString();
             String nombre = modelo.getValueAt(fila, 0).toString();         
-            
+            insertarinscripcion(carne);
+            FrmInscritos inscritos = new FrmInscritos(IdEvento, Usuario);
+            inscritos.setVisible(true);
+            this.dispose();
         }else{
             JOptionPane.showMessageDialog(this,"Debe seleccionar un esudiante");
         }
@@ -203,6 +206,45 @@ Connection cn = con.conectar();
    }
     }//GEN-LAST:event_BtnNuevoActionPerformed
 
+     public void insertarinscripcion(String Carne)
+    {       
+        String idusuario ="",idalumno = "";
+        String consulta;
+        try
+        {
+             //primero necesitamos saber el id del usuario logeado
+            consulta = "select id_usuario from con_usuarios where nombre_usuario ='"+Usuario+"'";
+            Statement st =  cn.createStatement();
+            ResultSet rs = st.executeQuery(consulta);                   
+            while(rs.next())  //while simple      
+                idusuario= rs.getString(1);
+            
+             //segundo necesitamos saber el id del alumno
+            consulta = "select Id_Alumno from con_alumnos where carne ='"+Carne+"'";
+            Statement st2 =  cn.createStatement();
+            ResultSet rs2 = st2.executeQuery(consulta);                   
+            while(rs2.next())  //while simple      
+                idalumno= rs2.getString(1);
+            
+            //tercero vamos a guardar la inscripcion
+             PreparedStatement guardarStmt =cn.prepareStatement("INSERT INTO con_inscripciones (id_alumno, id_evento, inscribio, no_asiento,no_bus) VALUES (?,?,?,?,?)");   
+                guardarStmt.setInt(1,  Integer.parseInt(idalumno));
+                guardarStmt.setInt(2, Integer.parseInt(IdEvento));
+                guardarStmt.setInt(3, Integer.parseInt(idusuario));
+                guardarStmt.setInt(4, Integer.parseInt(ComboAsiento.getSelectedItem().toString()));
+                guardarStmt.setInt(5, Integer.parseInt(ComboBus.getSelectedItem().toString()));
+     //Ejecuta la sentencia
+     guardarStmt.execute();
+     guardarStmt.close();
+       JOptionPane.showMessageDialog(null,"Se ha Inscrito correctamente");
+            
+         }
+        catch(Exception ex) {        
+         JOptionPane.showMessageDialog(null, "Error al inscribit" + ex.toString());
+        }
+        con.desconectar();
+    }
+    
     private void ComboBusItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ComboBusItemStateChanged
        llenarasiento();
     }//GEN-LAST:event_ComboBusItemStateChanged
@@ -286,6 +328,7 @@ Connection cn = con.conectar();
     
     public void llenarasiento()
     {
+        ComboAsiento.removeAllItems();
         String consulta = "Select no_asiento from con_asientos where disponibilidad=true and  no_bus="+ComboBus.getSelectedItem().toString();        
         try
         {           
