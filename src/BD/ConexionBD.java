@@ -10,9 +10,9 @@ import javax.swing.JOptionPane;
 public class ConexionBD {
 
 public  String puerto="3306";
-//public  String nomservidor="186.151.171.74";
-public  String nomservidor="192.168.1.50";
-public  String db="BDconvencion";
+public  String nomservidor="186.151.171.74";
+//public  String nomservidor="192.168.1.50";
+public  String db="bdconvencion";
 public  String user="daviduxotto";
 public  String pass="daviduxotto";
 Connection conn=null;

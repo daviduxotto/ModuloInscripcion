@@ -5,23 +5,34 @@ package moduloinscripcion;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import BD.ConexionBD;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 /**
  * @author Samuel
  */
 public class ImprimirRecibo extends javax.swing.JDialog implements Printable{
 
-    /**
-     * Creates new form imprimi
-     */
-    public ImprimirRecibo(java.awt.Frame parent, boolean modal) {
+    ConexionBD con=new ConexionBD();
+Connection cn = con.conectar();
+String Usuario;
+    public ImprimirRecibo(java.awt.Frame parent, boolean modal, String usuario) {
+        
         super(parent, modal);
         initComponents();
+        Usuario=usuario;
+        llenarrecibo();
         try {
             PrinterJob job = PrinterJob.getPrinterJob();
             job.setPrintable(this);
@@ -32,6 +43,55 @@ public class ImprimirRecibo extends javax.swing.JDialog implements Printable{
         }
     }
 
+    private ImprimirRecibo(JFrame jFrame, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public String obtenerinscripcion()
+    {
+        String consulta="SELECT max(id_inscipcion) FROM con_inscripciones";
+        String IdInscripcion="";
+       try
+        {           
+            Statement st =  cn.createStatement();
+            ResultSet rs = st.executeQuery(consulta);              
+            while(rs.next())  //while simple      
+            { 
+             IdInscripcion=rs.getString(1);        
+            }                                
+        }
+        catch(Exception ex) {        
+         JOptionPane.showMessageDialog(null, "Error al obtener la inscripcion" + ex);
+        }
+       return IdInscripcion;
+    }
+    
+    public void llenarrecibo()
+    {
+        String IdInscripcion=obtenerinscripcion();
+        String consulta="Select A.Nombre, A.Carne, E.Precio, I.Correlativo, I.no_asiento, I.no_bus from con_alumnos A inner join con_inscripciones I on I.id_alumno=A.Id_Alumno inner join con_eventos E on I.id_evento=E.Id_evento where I.Id_Inscipcion="+IdInscripcion;       
+       try
+        {           
+            Statement st =  cn.createStatement();
+            ResultSet rs = st.executeQuery(consulta);              
+            while(rs.next())  //while simple      
+            { 
+             labelnombre.setText(rs.getString(1));        
+             labelcarne.setText(rs.getString(2));
+             labelprecio.setText(rs.getString(3));
+             labelfirma.setText(rs.getString(4));
+             labelentrada.setText(rs.getString(4));
+             labelasientov.setText(rs.getString(5));
+             labelasientoi.setText(rs.getString(5));
+             labelbusv.setText(rs.getString(6));
+             labelbusi.setText(rs.getString(6));
+             labelusuario.setText(Usuario);
+            }                                
+        }
+        catch(Exception ex) {        
+         JOptionPane.showMessageDialog(null, "Error al obtener la inscripcion" + ex);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -42,6 +102,16 @@ public class ImprimirRecibo extends javax.swing.JDialog implements Printable{
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        labelfirma = new javax.swing.JLabel();
+        labelnombre = new javax.swing.JLabel();
+        labelcarne = new javax.swing.JLabel();
+        labelentrada = new javax.swing.JLabel();
+        labelprecio = new javax.swing.JLabel();
+        labelasientoi = new javax.swing.JLabel();
+        labelasientov = new javax.swing.JLabel();
+        labelbusi = new javax.swing.JLabel();
+        labelbusv = new javax.swing.JLabel();
+        labelusuario = new javax.swing.JLabel();
         labelfondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -55,23 +125,67 @@ public class ImprimirRecibo extends javax.swing.JDialog implements Printable{
         getContentPane().setLayout(null);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setLayout(null);
 
+        labelfirma.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        labelfirma.setText("firma");
+        jPanel1.add(labelfirma);
+        labelfirma.setBounds(550, 130, 140, 22);
+
+        labelnombre.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        labelnombre.setText("Nombre");
+        jPanel1.add(labelnombre);
+        labelnombre.setBounds(230, 160, 460, 22);
+
+        labelcarne.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        labelcarne.setText("Carne");
+        jPanel1.add(labelcarne);
+        labelcarne.setBounds(230, 200, 200, 22);
+
+        labelentrada.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelentrada.setForeground(new java.awt.Color(255, 255, 255));
+        labelentrada.setText("entrada");
+        jPanel1.add(labelentrada);
+        labelentrada.setBounds(90, 340, 120, 29);
+
+        labelprecio.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        labelprecio.setText("Precio");
+        jPanel1.add(labelprecio);
+        labelprecio.setBounds(570, 200, 80, 22);
+
+        labelasientoi.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelasientoi.setForeground(new java.awt.Color(255, 255, 255));
+        labelasientoi.setText("1");
+        jPanel1.add(labelasientoi);
+        labelasientoi.setBounds(650, 330, 30, 40);
+
+        labelasientov.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelasientov.setForeground(new java.awt.Color(255, 255, 255));
+        labelasientov.setText("1");
+        jPanel1.add(labelasientov);
+        labelasientov.setBounds(400, 330, 30, 40);
+
+        labelbusi.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelbusi.setForeground(new java.awt.Color(255, 255, 255));
+        labelbusi.setText("1");
+        jPanel1.add(labelbusi);
+        labelbusi.setBounds(570, 330, 30, 40);
+
+        labelbusv.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelbusv.setForeground(new java.awt.Color(255, 255, 255));
+        labelbusv.setText("1");
+        jPanel1.add(labelbusv);
+        labelbusv.setBounds(330, 330, 30, 40);
+
+        labelusuario.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        labelusuario.setText("usuario");
+        jPanel1.add(labelusuario);
+        labelusuario.setBounds(130, 230, 160, 22);
+
+        labelfondo.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         labelfondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/REcivo.jpg"))); // NOI18N
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(labelfondo, javax.swing.GroupLayout.PREFERRED_SIZE, 711, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(labelfondo, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 442, Short.MAX_VALUE))
-        );
+        jPanel1.add(labelfondo);
+        labelfondo.setBounds(30, 0, 711, 412);
 
         getContentPane().add(jPanel1);
         jPanel1.setBounds(0, 0, 710, 854);
@@ -128,7 +242,17 @@ public class ImprimirRecibo extends javax.swing.JDialog implements Printable{
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel labelasientoi;
+    private javax.swing.JLabel labelasientov;
+    private javax.swing.JLabel labelbusi;
+    private javax.swing.JLabel labelbusv;
+    private javax.swing.JLabel labelcarne;
+    private javax.swing.JLabel labelentrada;
+    private javax.swing.JLabel labelfirma;
     private javax.swing.JLabel labelfondo;
+    private javax.swing.JLabel labelnombre;
+    private javax.swing.JLabel labelprecio;
+    private javax.swing.JLabel labelusuario;
     // End of variables declaration//GEN-END:variables
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException{

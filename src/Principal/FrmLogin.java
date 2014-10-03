@@ -108,7 +108,7 @@ Connection cn = con.conectar();
             if(entrar=="si")
             {
                
-                if(rol.equals("inscripcion"))
+                if(rol.equals("Inscribir"))
                 {                    
                    FrmModuloInscripciones inscripciones = new FrmModuloInscripciones(usuario);
                    inscripciones.setVisible(true);

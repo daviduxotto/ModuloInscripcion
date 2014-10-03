@@ -8,10 +8,10 @@ package admin;
 import java.sql.*;
 
 public class conectate {
-   static String bd = "BDconvencion";
+   static String bd = "bdconvencion";
    static String login = "daviduxotto";
    static String password = "daviduxotto";
-   static String url = "jdbc:mysql://192.168.1.50/"+bd;
+   static String url = "jdbc:mysql://186.151.171.74/"+bd;
 
    Connection conn = null;
 

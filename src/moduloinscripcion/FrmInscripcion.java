@@ -245,7 +245,7 @@ Connection cn = con.conectar();
         }
         con.desconectar();
         
-        ImprimirRecibo dialog = new ImprimirRecibo(new javax.swing.JFrame(), true);
+        ImprimirRecibo dialog = new ImprimirRecibo(new javax.swing.JFrame(), true, Usuario);
   
     }
     
