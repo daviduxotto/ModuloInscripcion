@@ -193,6 +193,7 @@ Connection cn = con.conectar();
             String carne = modelo.getValueAt(fila, 1).toString();
             String nombre = modelo.getValueAt(fila, 0).toString();         
             insertarinscripcion(carne);
+            
             FrmInscritos inscritos = new FrmInscritos(IdEvento, Usuario);
             inscritos.setVisible(true);
             this.dispose();
@@ -243,6 +244,9 @@ Connection cn = con.conectar();
          JOptionPane.showMessageDialog(null, "Error al inscribit" + ex.toString());
         }
         con.desconectar();
+        
+        ImprimirRecibo dialog = new ImprimirRecibo(new javax.swing.JFrame(), true);
+  
     }
     
     private void ComboBusItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ComboBusItemStateChanged

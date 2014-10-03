@@ -1,4 +1,5 @@
 package Principal;
+import admin.*;
 import BD.ConexionBD;
 import moduloinscripcion.*;
 import java.sql.*;
@@ -115,8 +116,8 @@ Connection cn = con.conectar();
                 
                  if(rol.equals("Administrador"))
                 {                    
-//                FrmPrincipalRoot principal = new FrmPrincipalRoot(usuario);
-//                principal.setVisible(true);
+                     Menu menuprincipal = new Menu();
+                     menuprincipal.setVisible(true);
                 }            
                 this.dispose();
             }
